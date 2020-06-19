@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <script src = "https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
+  <script src = "country.js"></script>
+  <link href='https://cdn.jsdelivr.net/npm/boxicons@2.0.5/css/boxicons.min.css' rel='stylesheet'>
+  <link href="styles.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@300&display=swap" rel="stylesheet">
+
+  <title>COVID-19 DashBoard</title>
+</head>
+
+<body>
+  <div class="header">COVID-19 Dash Board</div>
+  <div class="center-content">
+      
+    <div class="input-feilds-wrapper">
+      <div class="country-selector-wrapper">
+        <div class="country-selector-text">   
+            Country Selector:
+          </div>
+
+        <input list ='countries' tpye = 'text' id="country" placeholder = "(Enter Country)" size = "30">
+        <datalist id = "countries"></datalist>
+        <div class="country-selector-button">
+          <!--
+          <input type="submit" id= "submission" onclick = "country_input_protocol()">
+          -->
+
+        </div>
+      </div>
+      <div class="province-selector-wrapper">
+        <div class="province-selector-text">State Selector (US only):</div>
+        <input type="text" id="province" placeholder = "(Enter Province / Town)" size = "30">
+        <div class="country-selector-button">
+          <!-- 
+            <input type="submit" id= "submission" onclick = "province_input_protocol()">
+            -->
+        </div>
+      </div>
+    </div>
+
+    <div class="information-wrapper">
+      <div id="information-header">Statistics:</div>
+      <div class="information-columns">
+        <div class="column-A">
+          <div id="new-cases">New Confirmed Cases:
+            0000000
+          </div>
+          <div id="total-cases">Total Confirmed Cases:
+            0000000
+          </div>
+          <div id="new-recovered">New Recovered:
+              0000000
+          </div>
+          <div id="total-recovered">Total Recovered:
+              0000000
+          </div>
+        </div>
+        <div class="column-B">
+          <div id="new-deaths">New Deaths:
+              0000000
+          </div>
+          <div id="total-deaths">Total Deaths:
+              0000000
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="lower-content">
+    <div class="line-graph">
+      <canvas id="line-chart"></canvas>
+    </div>
+    <div class="pi-graph">
+        <canvas id="pi-chart"></canvas>
+    </div>
+  </div>
+
+
+  <script src = "script.js"></script>
+</body>
+</html>
