@@ -1,6 +1,5 @@
 
 function country_input_protocol() {
-  console.log("hello")
   var country_input = document.getElementById("country").value
   var api_link;
   if (country_input.length == 0) {
@@ -13,7 +12,6 @@ function country_input_protocol() {
 
   //=======Setting Feild Values Based off Input:=======//
 
-  console.log(countries_set.size)
   for (let item of countries_set) {
     if (item.name == country_input) {
       document.getElementById("total-deaths").innerHTML = "Total Deaths: " + (item.total_deaths).toString();
@@ -28,6 +26,7 @@ function country_input_protocol() {
       deaths = item.total_deaths;
     }
   }
+  document.getElementById('province').value = '';
 
   if (country_input == "Global") {
     pi_chart_protocol();
@@ -38,7 +37,6 @@ function country_input_protocol() {
   /////////////////////////////////////////////
   /// Request API Connection - COVID-19 API ///
   /////////////////////////////////////////////
-  //fetch(api_link).then(response =>response.json()).then()
   var request_covid = new XMLHttpRequest();
   request_covid.open('GET', api_link, true)
 
@@ -50,28 +48,13 @@ function country_input_protocol() {
     for (let item of data) {
       cases_date_map.set(item.Date, item.Cases);
     }
-    line_chart_prootocol();
+    line_chart_protocol();
+    pi_chart_protocol();
+    fill_state_options(state_codes);
   }
 
   // Send request
   request_covid.send();
-
-
-  ////////////////////////////////////////////////
-  /// Request API Connection - Census Pop. API ///
-  ////////////////////////////////////////////////
-  var request_pop = new XMLHttpRequest();
-
-  request_pop.open('GET', 'https://api.census.gov/data/2019/pep/population?get=POP&for=us:*&key=b9bdee4252ff698f2fc93b55a5bab3f73d483050', true);
-  request_pop.onload = function() {
-    var data = JSON.parse(this.response);
-    US_pop = data[1][0];
-    pi_chart_protocol();
-  } 
-
-  // Send request
-  request_pop.send();
-
 }
 
 
@@ -81,7 +64,7 @@ function pi_chart_protocol() {
     recovered_population, 
     deaths];
 
-  console.log(pop_data);
+
   //Delete Current Chart Data:
   pi_graph.data.datasets.forEach((dataset) => {
     dataset.data.length = 0;
@@ -105,7 +88,7 @@ function pi_chart_protocol() {
 
 
 
-function line_chart_prootocol() {
+function line_chart_protocol() {
   //Get Data:
   var dates = []
   var cases = []
@@ -113,8 +96,17 @@ function line_chart_prootocol() {
   for (let item of cases_date_map) {
     index++;
     if (index % 7 == 0) {
-      dates.push((item[0].split("T")[0]));
-      cases.push(item[1]);
+      if (item[0].includes('T')) {
+        dates.push((item[0].split("T")[0]));
+        cases.push(item[1]);
+      } else {
+        var year = item[0].slice(0,4);
+        var month = item[0].slice(4,6);
+        var day = item[0].slice(6,8);
+        dates.push(year + '-' + month + '-' + day);
+        cases.push(item[1]);
+       
+      }
     }
   }
  
@@ -142,8 +134,6 @@ function line_chart_prootocol() {
   );
   
 }
-
-
 
 
 
@@ -195,18 +185,142 @@ function fill_country_information() {
 
 
 
+function province_input_protocol() {
+  var province_input = document.getElementById("province").value;
+  var country_input = document.getElementById('country').value;
+  if (country_input == 'United States of America') {
+    var state_abv = '';
+    //convert province input value to connected state code:
+    for (let pair of state_codes) {
+      if (pair[0] == province_input) {
+        state_abv = pair[1];
+      }
+    }
+    console.log(state_abv);
+
+    //////////////////////////////
+    /// Request API Connection ///
+    //////////////////////////////
+    var request = new XMLHttpRequest();
+    cases_date_map.clear();
+    request.open('GET', 'https://covidtracking.com//api/v1/states/daily.json', true)
+    request.onload = function() {
+
+      // Parsing API response JSON File:
+      var data = JSON.parse(this.response);
+      var index = 0;
+      console.log(data);
+      for (i = data.length-1; i > 0; i--) {
+        if (data[i].state == state_abv) {
+          cases_date_map.set((data[i].date).toString(), data[i].positive);
+          index = i;
+        }
+      }
+      infected_population = data[index].positive;
+      recovered_population = data[index].recovered;
+      deaths = data[index].death;
+      console.log(deaths);
+      console.log(infected_population);
+      console.log(recovered_population);
+      console.log(index);
+      document.getElementById("total-deaths").innerHTML = "Total Deaths: " + (data[index].death);
+      document.getElementById("total-cases").innerHTML = "Total Cases: " + (data[index].positive);
+      document.getElementById("total-recovered").innerHTML = "Total Recovered: " + (data[index].recovered);
+      document.getElementById("new-deaths").innerHTML = "New Deaths: " + (data[index].deathIncrease);
+      document.getElementById("new-cases").innerHTML = "New Cases: " + (data[index].positiveIncrease);
+      document.getElementById("new-recovered").innerHTML = "New Recovered: " + ('N/A');
+      document.getElementById("information-header").innerHTML = "Statistics: " + (province_input);
+      
+      
+      line_chart_protocol();
+      pi_chart_protocol();
+    }
+    
+    // Send request
+    request.send();
+  }
+}
+
+
+function fill_state_options(state_codes) {
+  var states_searchables = document.getElementById('states');
+  if (document.getElementById('country').value == "United States of America") {
+    var options = '';
+    for (let pair of state_codes) {
+      options += '<option value="'+pair[0]+'" />';
+    }
+    states_searchables.innerHTML = options;
+  } else {
+    states_searchables.innerHTML = '';
+  }
+}
+
+
+
+
+function fill_state_codes() {
+  var states = [
+    ['Arizona', 'AZ'],
+    ['Alabama', 'AL'],
+    ['Alaska', 'AK'],
+    ['Arkansas', 'AR'],
+    ['California', 'CA'],
+    ['Colorado', 'CO'],
+    ['Connecticut', 'CT'],
+    ['Delaware', 'DE'],
+    ['Florida', 'FL'],
+    ['Georgia', 'GA'],
+    ['Hawaii', 'HI'],
+    ['Idaho', 'ID'],
+    ['Illinois', 'IL'],
+    ['Indiana', 'IN'],
+    ['Iowa', 'IA'],
+    ['Kansas', 'KS'],
+    ['Kentucky', 'KY'],
+    ['Louisiana', 'LA'],
+    ['Maine', 'ME'],
+    ['Maryland', 'MD'],
+    ['Massachusetts', 'MA'],
+    ['Michigan', 'MI'],
+    ['Minnesota', 'MN'],
+    ['Mississippi', 'MS'],
+    ['Missouri', 'MO'],
+    ['Montana', 'MT'],
+    ['Nebraska', 'NE'],
+    ['Nevada', 'NV'],
+    ['New Hampshire', 'NH'],
+    ['New Jersey', 'NJ'],
+    ['New Mexico', 'NM'],
+    ['New York', 'NY'],
+    ['North Carolina', 'NC'],
+    ['North Dakota', 'ND'],
+    ['Ohio', 'OH'],
+    ['Oklahoma', 'OK'],
+    ['Oregon', 'OR'],
+    ['Pennsylvania', 'PA'],
+    ['Rhode Island', 'RI'],
+    ['South Carolina', 'SC'],
+    ['South Dakota', 'SD'],
+    ['Tennessee', 'TN'],
+    ['Texas', 'TX'],
+    ['Utah', 'UT'],
+    ['Vermont', 'VT'],
+    ['Virginia', 'VA'],
+    ['Washington', 'WA'],
+    ['West Virginia', 'WV'],
+    ['Wisconsin', 'WI'],
+    ['Wyoming', 'WY'],
+  ];
+  return states;
+}
+
 /*********************************/
 ////////// Main Function //////////
 /*********************************/
 function main() {
-
+  state_codes = fill_state_codes();
   fill_country_information();
-  //country_input_protocol();
-  //province_input_protocol();
-
-
-
-
+  fill_state_options(state_codes);
 }
 
 
@@ -217,7 +331,11 @@ let country_slug_map = new Map();
 let countries_set = new Set();
 let cases_date_map = new Map();
 let US_pop = 0;
+let state_codes = [];
 //==============================//
+
+
+
 
 
 //Creating Line-Chart Object:
@@ -280,9 +398,6 @@ var line_graph = new Chart(ctx_line, {
 Chart.defaults.global.defaultFontColor = '#C5C6C7';
 
 
-
-
-
 //Creating Pi-Chart Object:
 //===========================================================================//
 var total_population = 1;
@@ -318,22 +433,37 @@ var pi_graph = new Chart(ctx_pi, {
 //===========================================================================//
 
 
-//Adding event listeners to text fields:
-var country_enter = document.getElementById('country')
 
- // Execute a function when the user releases a key on the keyboard
+
+////////////////////////////////////////////
+// Adding event listeners to text fields: //
+////////////////////////////////////////////
+//===========================================================================//
+var country_enter = document.getElementById('country')
+var province_enter = document.getElementById('province')
+
+//Using Enter key to call Protocols:
+
 country_enter.addEventListener("keyup", function(event) {
   // Number 13 is the "Enter" key on the keyboard
   if (event.keyCode === 13) {
     country_input_protocol();
-    /*
-    // Cancel the default action, if needed
-    event.preventDefault();
-    // Trigger the button element with a click
-    document.getElementById("myBtn").click();
-    */
   }
 });
+
+province_enter.addEventListener("keyup",function(event) {
+  if (event.keyCode == 13) {
+    province_input_protocol();
+  }
+});
+//===========================================================================//
+
+
+
+
+
+
+
 
 
 
@@ -342,29 +472,3 @@ country_enter.addEventListener("keyup", function(event) {
                         //// Activating Main Function ////
 main();
 /////////////////=============================================/////////////////
-
-
-
-
-function province_input_protocol() {
-  var province_input = document.getElementById("province").value
-  var country_input = document.getElementById("country").value
-  if (province_input.length != 0 && country_input.length != 0) {
-
-
-    //////////////////////////////
-    /// Request API Connection ///
-    //////////////////////////////
-    var request = new XMLHttpRequest();
-  
-    request.open('GET', 'https://api.covid19api.com/dayone/country/' + country_input + '/status/confirmed', true)
-    request.onload = function() {
-      // Parsing API response JSON File:
-      var data = JSON.parse(this.response);
-      console.log(data);
-    }
-  
-    // Send request
-    request.send();
-  }
-}
