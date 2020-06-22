@@ -332,6 +332,12 @@ let countries_set = new Set();
 let cases_date_map = new Map();
 let US_pop = 0;
 let state_codes = [];
+var dates = [];
+var cases = [];
+var total_population = 1;
+var infected_population = 1;
+var recovered_population = 0;
+var deaths = 0;
 //==============================//
 
 
@@ -340,8 +346,6 @@ let state_codes = [];
 
 //Creating Line-Chart Object:
 //===========================================================================//
-var dates = [];
-var cases = [];
 var ctx_line = document.getElementById('line-chart').getContext('2d');
 var line_graph = new Chart(ctx_line, {
   type: 'line',
@@ -365,11 +369,12 @@ var line_graph = new Chart(ctx_line, {
       fontSize: 20
     },
     tooltips: {
-      mode: 'label',
+      mode: 'nearest',
+      intersect: false,
+      backgroundColor: '#1F2833'
     },
     hover: {
-      mode: 'nearest',
-      intersect: true
+      intersect: false
     },
     scales: {
       xAxes: [{
@@ -398,13 +403,10 @@ var line_graph = new Chart(ctx_line, {
 Chart.defaults.global.defaultFontColor = '#C5C6C7';
 
 
+
+
 //Creating Pi-Chart Object:
 //===========================================================================//
-var total_population = 1;
-var infected_population = 1;
-var recovered_population = 0;
-var deaths = 0;
-
 var ctx_pi = document.getElementById('pi-chart').getContext('2d');
 var pi_graph = new Chart(ctx_pi, {
   type: 'doughnut',
@@ -459,8 +461,23 @@ province_enter.addEventListener("keyup",function(event) {
 //===========================================================================//
 
 
+function iphoneX (is_iphone_view) {
+  if (is_iphone_view.matches) { 
+    line_graph.options.scales.yAxes = [{
+      gridLines: {
+        //drawBorder: false
+      }
+    }]
+    line_graph.update();
+  }
+}
 
-
+/////////////////////////////////////////////
+// Adding event listeners for media query: //
+/////////////////////////////////////////////
+var is_iphone_view = window.matchMedia("(max-width: 375px)");
+iphoneX(is_iphone_view);
+is_iphone_view.addListener(iphoneX);
 
 
 
