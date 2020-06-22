@@ -14,6 +14,7 @@ body {
   font-size: 2.0em;
   display: flex;
   justify-content: center;
+  font-weight: bolder;
 }
 .center-content {
   display: flex;
@@ -32,7 +33,7 @@ body {
   border: 0px;
   border-bottom: 2px solid #45A29E;
   margin-bottom: 5%;
-  transition: 0.2s;
+  transition: 0.3s;
   color: #C5C6C7;
 }
 
@@ -73,7 +74,7 @@ body {
   font-size: 1.4em;
 }
 
-.information-wrapper {
+#information-wrapper {
   height: 35vh;
   width: 500px;
   font-size: 1.2em;
@@ -123,14 +124,14 @@ body {
   display: flex;
   justify-content: space-around;
 }
-.line-graph {
+#line-graph {
   width: 650px;
   height: 375px;
   margin-right: 7%;
-  margin-top: -3%;
+  margin-top: -5%;
 }
 
-.pi-graph {
+#pi-graph {
   width: 300px;
   height: 300px;
 
@@ -145,14 +146,13 @@ input:focus, textarea:focus, select:focus{
 }
 
 
-
-
-
-/*I PHONEX MEDIA QUERY*/
-@media (max-width: 375px) {
+/*I PHONE 6,7,8,X MEDIA QUERY*/
+@media (max-width: 414px) {
+  html {
+    height: 215%;
+  }
   body {
     width: 100vw;
-    height: 185vh;
   }
   .header {
     width: 100%;
@@ -170,18 +170,37 @@ input:focus, textarea:focus, select:focus{
   .information-header {
     text-align: center;
   }
+
   .input-feilds-wrapper {
     width: 77%;
     margin: auto;
+    font-size: 1.0em;
   }
+  #province {
+    font-size: 0.8em;
+  }
+  #country {
+    font-size: 0.8em;
+  }
+  .country-selector-text {
+    font-size: 1.2em;
+  }
+  .province-selector-wrapper {
+    font-size: 1.2em;
+  }
+  .country-selector-wrapper {
+    font-size: 1.2em;
+  }
+
 
   .column-A {
     margin-right: 25px;
   }
-  .information-wrapper {
+  #information-wrapper {
     width: 90%;
     margin: auto;
     padding-top: 7vh;
+    font-size: 1.0em;
     
   }
   .information-columns {
@@ -194,19 +213,23 @@ input:focus, textarea:focus, select:focus{
     display:block;
   }
 
-  .line-graph {
-    padding-top: 100px;
+  #line-graph {
+    padding-top: 50px;
     width: 95%;
     margin: auto;
   }
 
-  .pi-graph {
-    padding-top: 50px;
+  #pi-graph {
+    padding-top: 30px;
     width: 85%;
     margin: auto;
     padding-bottom: 20px;
   }
+}
 
+
+
+@media (max-width: 768px) {
 
 
 }

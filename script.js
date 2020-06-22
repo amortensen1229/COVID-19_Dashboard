@@ -17,9 +17,9 @@ function country_input_protocol() {
       document.getElementById("total-deaths").innerHTML = "Total Deaths: " + (item.total_deaths).toString();
       document.getElementById("total-cases").innerHTML = "Total Cases: " + (item.total_cases).toString();
       document.getElementById("total-recovered").innerHTML = "Total Recovered: " + (item.total_recovered).toString();
-      document.getElementById("new-deaths").innerHTML = "New Deaths: " + (item.new_deaths).toString();
-      document.getElementById("new-cases").innerHTML = "New Cases: " + (item.new_cases).toString();
-      document.getElementById("new-recovered").innerHTML = "New Recovered: " + (item.new_recovered).toString();
+      document.getElementById("new-deaths").innerHTML = "Today's Deaths: " + (item.new_deaths).toString();
+      document.getElementById("new-cases").innerHTML = "Today's Cases: " + (item.new_cases).toString();
+      document.getElementById("new-recovered").innerHTML = "Today's Recovered: " + (item.new_recovered).toString();
       document.getElementById("information-header").innerHTML = "Statistics: " + (item.name);
       infected_population = item.total_cases;
       recovered_population = item.total_recovered;
@@ -47,6 +47,13 @@ function country_input_protocol() {
     cases_date_map.clear();
     for (let item of data) {
       cases_date_map.set(item.Date, item.Cases);
+    }
+    if (scroll_veiw) {
+      console.log("hello")
+      var scroll = document.getElementById('information-header');
+      scroll.scrollIntoView( {
+        behavior: "smooth"
+      });
     }
     line_chart_protocol();
     pi_chart_protocol();
@@ -226,9 +233,9 @@ function province_input_protocol() {
       document.getElementById("total-deaths").innerHTML = "Total Deaths: " + (data[index].death);
       document.getElementById("total-cases").innerHTML = "Total Cases: " + (data[index].positive);
       document.getElementById("total-recovered").innerHTML = "Total Recovered: " + (data[index].recovered);
-      document.getElementById("new-deaths").innerHTML = "New Deaths: " + (data[index].deathIncrease);
-      document.getElementById("new-cases").innerHTML = "New Cases: " + (data[index].positiveIncrease);
-      document.getElementById("new-recovered").innerHTML = "New Recovered: " + ('N/A');
+      document.getElementById("new-deaths").innerHTML = "Today's Deaths: " + (data[index].deathIncrease);
+      document.getElementById("new-cases").innerHTML = "Today's Cases: " + (data[index].positiveIncrease);
+      document.getElementById("new-recovered").innerHTML = "Today's Recovered: " + ('N/A');
       document.getElementById("information-header").innerHTML = "Statistics: " + (province_input);
       
       
@@ -338,6 +345,7 @@ var total_population = 1;
 var infected_population = 1;
 var recovered_population = 0;
 var deaths = 0;
+var scroll_veiw = false;
 //==============================//
 
 
@@ -458,6 +466,36 @@ province_enter.addEventListener("keyup",function(event) {
     province_input_protocol();
   }
 });
+
+//Automatic Submission if option selected
+country_enter.addEventListener("change", function(event){
+  for (let item of countries_set) {
+    if (document.getElementById('country').value == item.name) {
+      country_input_protocol();
+    }
+  }
+});
+
+
+province_enter.addEventListener("change", function(event){
+  for (let item of state_codes) {
+    if (document.getElementById('province').value == item[0]) {
+      province_input_protocol();
+    }
+  }
+});
+
+country_enter.addEventListener('mousedown', function(event) {
+  country_enter.value = '';
+});
+
+province_enter.addEventListener('mousedown', function(event) {
+  province_enter.value = '';
+})
+
+
+
+
 //===========================================================================//
 
 
@@ -469,13 +507,17 @@ function iphoneX (is_iphone_view) {
       }
     }]
     line_graph.update();
+    scroll_veiw = true;
+    console.log(scroll_veiw);
+  } else {
+    scroll_veiw = false;
   }
 }
 
 /////////////////////////////////////////////
 // Adding event listeners for media query: //
 /////////////////////////////////////////////
-var is_iphone_view = window.matchMedia("(max-width: 375px)");
+var is_iphone_view = window.matchMedia("(max-width: 414px)");
 iphoneX(is_iphone_view);
 is_iphone_view.addListener(iphoneX);
 

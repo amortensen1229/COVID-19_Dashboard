@@ -23,7 +23,7 @@
             Country Selector:
           </div>
 
-        <input list ='countries' tpye = 'text' id="country" placeholder = "(Enter Country)" size = "30">
+        <input list ='countries' tpye = 'text' id="country" placeholder = "(Enter Country)" size = "30" onclick="country_input_protocol()">
         <datalist id = "countries"></datalist>
         <div class="country-selector-button">
           <!--
@@ -44,17 +44,17 @@
       </div>
     </div>
 
-    <div class="information-wrapper">
+    <div id="information-wrapper">
       <div id="information-header">Statistics:</div>
       <div class="information-columns">
         <div class="column-A">
-          <div id="new-cases">New Confirmed Cases:
+          <div id="new-cases">Today's Confirmed Cases:
             0000000
           </div>
           <div id="total-cases">Total Confirmed Cases:
             0000000
           </div>
-          <div id="new-recovered">New Recovered:
+          <div id="new-recovered">Today's Recovered:
               0000000
           </div>
           <div id="total-recovered">Total Recovered:
@@ -62,7 +62,7 @@
           </div>
         </div>
         <div class="column-B">
-          <div id="new-deaths">New Deaths:
+          <div id="new-deaths">Today's Deaths:
               0000000
           </div>
           <div id="total-deaths">Total Deaths:
@@ -73,10 +73,10 @@
     </div>
   </div>
   <div class="lower-content">
-    <div class="line-graph">
+    <div id="line-graph">
       <canvas id="line-chart"></canvas>
     </div>
-    <div class="pi-graph">
+    <div id="pi-graph">
         <canvas id="pi-chart"></canvas>
     </div>
   </div>
